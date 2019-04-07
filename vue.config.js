@@ -5,7 +5,12 @@ module.exports = {
     'style-resources-loader': {
       preProcessor: 'sass',
       patterns: [
-      	'C:\\work\\vue\\broadcast\\src\\styles\\app.sass',
+        'C:\\work\\vue\\broadcast\\src\\styles\\*.sass'
+      ]
+    },
+    moment: {
+      locales: [
+        'ru en'
       ]
     }
   }
