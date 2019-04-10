@@ -9,7 +9,7 @@
     		Ссылка
     	</li>
     	<li>
-    		Просмотр с
+    		Время (c) просмотра
     	</li>
     	<li>
     		Последнее подтверждение
@@ -23,37 +23,107 @@
     </ul>
     
     <ul>
-    	<li class="listitems" v-for="item in allData">
+    	<li class="listitems" v-for="item in allData.users">
     		<span>{{ item.name }}</span>
-    		<span>{{ item.link }}</span>
-    		<span>{{ item.timefrom }}</span>
-    		<span>{{ item.last }}</span>
-    		<span class="clickable" v-on:click="stat()">{{ item.geted }}/{{ item.from }}</span>
+    		<span>{{ item.id }}</span>
+    		<span v-if="item.timeto==0" class="clickable">
+    			{{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
+    		</span>
+    		<span v-else>
+    			{{ getNormal(item.timefrom, item.timeto) }}
+    		</span>
+    		<span>
+    			{{ moment(item.last).format('DD.MM.YYYY HH:mm:ss') }}
+    		</span>
+    		<span class="clickable" v-on:click="stat()">{{ item.testPass }}/{{ item.testCount }}</span>
     		<span v-if="item.status==1">Онлайн</span>
     		<span v-else>Офлайн</span>
+    		<div class="settings">
+    			
+    		</div>
     	</li>
     </ul>
+
+    <!-- 
+    <div class="testform">
+    	<h2>
+    		Проверка связи с сокетом
+    	</h2>
+	    <input v-model="tosend" type="text">
+	    <div class="button" v-on:click="sendwss()">Отправить</div>
+    </div>
+	-->
+    
   </div>
 </template>
 
-<script lang="ts">
-export default {
-	data() {
-		return {
-			allData: [
-				{"name": "Никита", "link": "213", "timefrom": "15:24", "last": "12:45", "geted": "12", "from": "20", "status": "1"},
-				{"name": "Витя", "link": "51512", "timefrom": "132:24", "last": "232:45", "geted": "6472", "from": "24550", "status": "0"},
-				{"name": "Коля", "link": "32323232", "timefrom": "1665:24", "last": "12:466665", "geted": "16662", "from": "2660", "status": "0"},
-				{"name": "Женя", "link": "221313231213", "timefrom": "15:25554", "last": "12:455555", "geted": "15552", "from": "20", "status": "1"},
+<script lang="js">
+import Vue from 'vue';
+import moment from 'moment';
+import axios from 'axios';
 
-			],
-			counter: 0
-		}
-	},
-	methods: {
-		stat(){
-		}
-	}
+const socket = new WebSocket("ws://localhost:8080");
+
+
+
+export default {
+  data() {
+    return {
+      allData: {loading: "load"},
+      counter: 0,
+      moment,
+      tosend: 0,
+      date: "24.05.2001"
+    }
+  },
+  methods: {
+    getNormal(from, to){
+      return (moment.utc(moment(to).diff(moment(from))).format("HH:mm:ss"));
+    },
+    sendwss() {
+      socket.send(this.tosend)
+    },
+    reloadList() {
+      axios.get('http://localhost:8456/getall').then((response) => {
+        this.allData = response.data;
+      })
+    },
+    change(toch) {
+      this.allData = toch;
+      this.$forceUpdate();
+    },
+    changeData(data) {
+      let stateData = this.allData;
+      let parsed = JSON.parse(data);
+      console.log(data);
+      for (let i in parsed) {
+        let idchange = parsed[i].id;
+        for (let j in stateData.users) {
+          let dataid = stateData.users[j].id;
+          if (dataid == idchange) {
+            stateData.users[j] = parsed[i];
+            parsed.slice(i, 1);
+          }
+        }
+      }
+      if (parsed.length>0) {
+        for (let i in parsed) {
+          stateData.users[((parsed[i].id) + 1)] = parsed[i];
+        }
+      }
+      this.change(stateData);
+    }
+  },
+  mounted() {
+    this.reloadList();
+    const _this = this;
+    socket.onopen = function (evt) {
+      socket.send(JSON.stringify({action: "listen"}));
+    }
+    socket.onmessage = function(msg) {
+      _this.changeData(msg.data);
+    }
+  }
 }
 </script>
 
@@ -74,8 +144,6 @@ export default {
 .listitems
 	width: 100%
 	+flexbox(flex-start, flex-start)
-	
-	
 	border: solid 1px #fff
 	transition: border ease-in-out 0.2s
 	&:hover
@@ -83,7 +151,11 @@ export default {
 	span
 		width: calc(100% / 6)
 		text-align: center
-		padding: 15px 0
+		padding: 15px
 		&.clickable
 			cursor: pointer
+
+</style>
+<style lang="sass">
+
 </style>
