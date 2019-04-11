@@ -10,7 +10,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import list from './components/list.vue';
 import addNew from './components/adduser.vue';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserPlus, faTimes, faChevronRight, faColumns } from '@fortawesome/free-solid-svg-icons'
+import { faUserPlus, faTimes, faChevronRight, faColumns, faMousePointer } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 Vue.component('ic', FontAwesomeIcon)
 Vue.config.productionTip = false

@@ -24,14 +24,26 @@
         </div>
       </ul>
       <ul class="links">
+
         <div class="load" v-if="linkloaded==0">
           <ic icon="columns"></ic>
           <h2>
             Сначала выберите группу
           </h2>
         </div>
-        <li v-else class="list">
-          
+        <li v-for="item in chunklink" v-else class="list">
+          <span class="id">{{item.id}}</span>
+          <span v-if="item.timeto==0" class="clickable">
+            {{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
+          </span>
+          <span v-else>
+            {{ getNormal(item.timefrom, item.timeto) }}
+          </span>
+          <span>
+            {{ moment(item.last).format('DD.MM.YYYY HH:mm:ss') }}
+          </span>
+          <span v-on:click="stat()">{{ item.testPass }}/{{ item.testCount }}</span>
+          <ic v-bind:class="{active: item.status==1}" icon="mouse-pointer"></ic>
         </li>
         
       </ul>
@@ -57,7 +69,8 @@ export default {
     return {
       groups: null,
       linkloaded: 0,
-      chunklink: null
+      chunklink: null,
+      moment: moment
     }
   },
   methods: {
@@ -72,7 +85,8 @@ export default {
       let _this = this;
       axios.get('http://127.0.0.1:8456/gtList', {params: {id: id}})
       .then(function(response){
-        _this.groups = response.data;
+        _this.chunklink = response.data.data;
+        _this.linkloaded =  true;
       });
       
     }
@@ -133,9 +147,10 @@ h1
 .links
   width: 100%
   border: solid 1px #339af050
-  min-height: 700px
   margin-left: 20px
   border-radius: 5px
+  overflow: hidden
+  padding: 20px 00px
   .load
     width: 100%
     height: 100%
@@ -146,6 +161,19 @@ h1
       margin-top: 10px
     svg
       font-size: 50px
+  .list
+    width: 100%
+    +flexbox(flex-start, space-between)
+    padding: 20px 30px
+    border-bottom: solid 1px #339af050
+    .id
+      +fb
+    &:last-child
+      border-bottom: none
+    svg
+      color: #f98787
+    svg.active
+      color: #87f998
 </style>
 <style lang="sass">
 
