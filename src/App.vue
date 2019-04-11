@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <addNew />
     <list/>
     
   </div>
@@ -10,11 +9,17 @@
 import { Component, Vue } from 'vue-property-decorator';
 import list from './components/list.vue';
 import addNew from './components/adduser.vue';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUserPlus, faTimes, faChevronRight, faColumns } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+Vue.component('ic', FontAwesomeIcon)
+Vue.config.productionTip = false
+
+
 
 @Component({
   components: {
     list,
-    addNew,
   },
 })
 export default class App extends Vue {}
@@ -30,11 +35,12 @@ ul
   width: 1200px
   margin: 30px auto  
 .button
-  background: #00000010
+  background: #339af0
   text-align: center
   padding: 15px 0!important
   cursor: pointer
-
+  color: white
+  border-radius: 5px
 .testform
   margin-top: 40px
   min-width: 120px
