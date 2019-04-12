@@ -1,0 +1,12 @@
+{
+  "dash": {
+    "entry": "src/views/dash/app.js",
+    "filename": "dash.html",
+    "template": "public/index.html"
+  },
+  "index": {
+    "entry": "src/views/index/app.js",
+    "filename": "index.html",
+    "template": "public/index.html"
+  }
+}

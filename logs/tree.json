@@ -1,0 +1,24 @@
+{
+  "path": "#",
+  "name": "views",
+  "children": [
+    {
+      "path": "dash.html",
+      "name": "Index Page",
+      "size": 174,
+      "type": "file",
+      "extension": ".js",
+      "merged": true
+    },
+    {
+      "path": "index.html",
+      "name": "Index Page",
+      "size": 135,
+      "type": "file",
+      "extension": ".js",
+      "merged": true
+    }
+  ],
+  "size": 309,
+  "type": "directory"
+}

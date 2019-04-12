@@ -1,0 +1,6 @@
+{
+  "route": [
+    { "name": "Index Page", "chunk": "dash", "location": "dash.html" },
+    { "name": "Index Page", "chunk": "index", "location": "index.html" }
+  ]
+}

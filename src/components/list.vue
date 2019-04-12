@@ -102,7 +102,7 @@ export default {
 .list
 	width: 100%
 .bb
-  border-bottom: solid 1px #339af050
+  border-bottom: solid 1px rgba(51, 154, 240, 0.5)
   padding-bottom: 20px
 
 h1
@@ -113,12 +113,12 @@ h1
   +flexbox(flex-start, flex-start)
 .groups
   width: 300px
-  border: solid 1px #339af050
+  border: solid 1px rgba(51, 154, 240, 0.5)
   border-radius: 5px
   overflow: hidden
   flex-shrink: 0
   li
-    border-bottom: solid 1px #339af050
+    border-bottom: solid 1px rgba(51, 154, 240, 0.5)
     padding: 10px 20px 15px 20px
     background: #fff
     transition: background cubic-bezier(0.645, 0.045, 0.355, 1) 0.1s, color cubic-bezier(0.645, 0.045, 0.355, 1) 0.1s
@@ -146,7 +146,7 @@ h1
       +fb
 .links
   width: 100%
-  border: solid 1px #339af050
+  border: solid 1px rgba(51, 154, 240, 0.5)
   margin-left: 20px
   border-radius: 5px
   overflow: hidden
@@ -165,7 +165,7 @@ h1
     width: 100%
     +flexbox(flex-start, space-between)
     padding: 20px 30px
-    border-bottom: solid 1px #339af050
+    border-bottom: solid 1px rgba(51, 154, 240, 0.5)
     .id
       +fb
     &:last-child
