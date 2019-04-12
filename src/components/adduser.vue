@@ -37,6 +37,7 @@ export default {
 		axios.get('http://127.0.0.1:8456/dgroup', {params: {name: this.groupname, iter: this.iter}})
 		.then(function(){
 			_this.activePopup=0;
+			_this.$parent.reloadList();
 		});
 
     },
