@@ -5,7 +5,7 @@
       <p>Идёт загрузка, подождите</p>
     </div>
     <div v-else>
-      <iframe src="http://127.0.0.1:8456/getHtml?ref=1.html"></iframe>
+      <iframe :src='"http://127.0.0.1:8456/getHtml?" + chunk'></iframe>
     </div>
   </div>
   
@@ -15,25 +15,35 @@
 import {SquareGrid} from 'vue-loading-spinner';
 import axios from 'axios';
 
+const socket = new WebSocket("ws://localhost:8085");
+
+
 export default {
   data() {
     return {
-      loaded: 0,
+      loaded: true,
       chunk: '',
     }
   },
   methods: {
     getHtml(){
-      var _this = this;
-      axios.get('http://127.0.0.1:8456/getHtml', {params: {ref: "1.html"}})
-      .then(function(response){
-        _this.chunk = response.data;
-        _this.loaded =  true;
-      });
+      this.chunk = 'ref=1.html';
     }
   }, 
   mounted() {
-    this.getHtml();
+    var _this = this;
+    socket.onopen = function (evt) {
+      socket.send(JSON.stringify({action: "getLink"}));
+    }
+    socket.onmessage = function(msg) {
+      var mes = JSON.parse(msg.data);
+      switch(mes.status) {
+         case "linkgeted":
+           _this.chunk = mes.data;
+           break;
+       } (mes.status)
+      
+    }
   },
   components: {
     SquareGrid

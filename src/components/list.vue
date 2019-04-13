@@ -31,7 +31,7 @@
             Сначала выберите группу
           </h2>
         </div>
-        <li v-for="item in chunklink" v-else class="list">
+        <li v-on:click="changeStatus(item.id)" v-for="item in chunklink" v-else class="list">
           <span class="id">{{item.id}}</span>
           <span v-if="item.timeto==0" class="clickable">
             {{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
@@ -42,7 +42,7 @@
           <span>
             {{ moment(item.last).format('DD.MM.YYYY HH:mm:ss') }}
           </span>
-          <span v-on:click="stat()">{{ item.testPass }}/{{ item.testCount }}</span>
+          <span>{{ item.testPass }}/{{ item.testCount }}</span>
           <ic v-bind:class="{active: item.status==1}" icon="mouse-pointer"></ic>
         </li>
         
@@ -67,10 +67,11 @@ const socket = new WebSocket("ws://localhost:8080");
 export default {
   data() {
     return {
-      groups: null,
+      groups: {},
       linkloaded: 0,
-      chunklink: null,
-      moment: moment
+      chunklink: {},
+      moment: moment,
+      parent: 0,
     }
   },
   methods: {
@@ -87,12 +88,43 @@ export default {
       .then(function(response){
         _this.chunklink = response.data.data;
         _this.linkloaded =  true;
+        _this.parent = id;
+        socket.send(JSON.stringify({"action": "connect", "target": id}));
       });
       
+    },
+    changeStatus(id){
+      axios.get('http://127.0.0.1:8456/updateSt', {params: {parent: this.parent, id: id}});
+    },
+    changeData(data){
+      for (var i in data){
+        for (var j in this.chunklink){
+          if (data[i].id == this.chunklink[j].id){
+            this.chunklink[j] = data[i];
+            this.$forceUpdate();
+          }
+        }
+      }
     }
   },
   mounted() {
     this.reloadList();
+    var _this = this;
+    socket.onopen = function (evt) {
+      socket.send(JSON.stringify({action: "listen"}));
+    }
+    socket.onmessage = function(msg) {
+      var mes = JSON.parse(msg.data);
+      switch(mes.status) {
+         case "reload":
+           _this.changeData(mes.data);
+           break;
+         case "newgroup":
+           _this.reloadList();
+           break;
+       } (mes.status)
+      
+    }
   }
 }
 </script>
