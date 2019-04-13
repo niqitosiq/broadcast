@@ -4,8 +4,8 @@
       <square-grid background="#339af0"></square-grid>  
       <p>Идёт загрузка, подождите</p>
     </div>
-    <div v-else v-html="chunk">
-      
+    <div v-else>
+      <iframe src="http://127.0.0.1:8456/getHtml?ref=1.html"></iframe>
     </div>
   </div>
   
@@ -19,15 +19,15 @@ export default {
   data() {
     return {
       loaded: 0,
-      chunk: '<p>Идёт загрузка</p>',
+      chunk: '',
     }
   },
   methods: {
     getHtml(){
       var _this = this;
-      axios.get('http://127.0.0.1:8456/getHtml')
+      axios.get('http://127.0.0.1:8456/getHtml', {params: {ref: "1.html"}})
       .then(function(response){
-        _this.chunk = JSON.parse(response.data).data;
+        _this.chunk = response.data;
         _this.loaded =  true;
       });
     }
@@ -53,4 +53,15 @@ export default {
     >.spinner 
       width: 100px!important
       height: 100px!important
+  iframe, .container
+    width: 100%
+    height: 100%
+  .container>*
+    height: 100%
+</style>
+
+<style lang="sass">
+  html,body
+    width: 100%
+    height: 100%
 </style>
