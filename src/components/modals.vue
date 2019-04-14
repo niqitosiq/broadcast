@@ -21,7 +21,7 @@
 		
 		<h3>Изменить максимальное количество переходов</h3>
 		<input v-model="old" type="text">
-		<div v-on:click="addNewGroup();" class="button">Изменить</div>
+		<div v-on:click="edit();" class="button">Изменить</div>
 		<ic @click="$modal.hide('editItem')" class="close" icon="times"></ic>
 		<div class="path">Путь: {{ parent }} -> {{ id }}</div>
 	</modal>
@@ -58,7 +58,7 @@
 					max: this.max
 				}})
 				.then(function(){
-					_this.activePopup=0;
+					_this.$modal.hide('newgroup')
 				});
 			},
 			getTemp(){
@@ -72,6 +72,17 @@
 				this.id = event.params.id;
 				this.parent = event.params.parent;
 				this.old = event.params.old;
+			},
+			edit(){
+				let _this = this;
+				axios.get('http://127.0.0.1:8456/editMax', {params: {
+					"parent": this.parent,
+					"id": this.id,
+					"new": this.old
+				}})
+				.then(function(response){
+					_this.$modal.hide('editItem')
+				});
 			}
 		},
 		mounted() {
