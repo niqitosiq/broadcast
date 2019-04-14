@@ -16,6 +16,7 @@
     "clipboard": "^2.0.4",
     "core-js": "^2.6.5",
     "moment": "^2.24.0",
+    "query-parameters": "^0.1.2",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-loading-spinner": "^1.0.11",

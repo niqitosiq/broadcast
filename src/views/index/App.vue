@@ -5,7 +5,7 @@
       <p>Идёт загрузка, подождите</p>
     </div>
     <div v-else>
-      <iframe :src='"http://127.0.0.1:8456/getHtml?" + chunk'></iframe>
+      <iframe v-if="chunk!=''" :src='"http://127.0.0.1:8456/getHtml?" + chunk'></iframe>
     </div>
   </div>
   
@@ -14,7 +14,7 @@
 <script>
 import {SquareGrid} from 'vue-loading-spinner';
 import axios from 'axios';
-
+import extract from 'query-parameters';
 const socket = new WebSocket("ws://localhost:8085");
 
 
@@ -26,14 +26,12 @@ export default {
     }
   },
   methods: {
-    getHtml(){
-      this.chunk = 'ref=1.html';
-    }
   }, 
   mounted() {
     var _this = this;
+    console.log();
     socket.onopen = function (evt) {
-      socket.send(JSON.stringify({action: "getLink"}));
+      socket.send(JSON.stringify({action: "getLink", p: extract(window.location.href).p}));
     }
     socket.onmessage = function(msg) {
       var mes = JSON.parse(msg.data);
