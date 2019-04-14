@@ -28,12 +28,21 @@ export default {
     }
   },
   methods: {
+    leaving(){
+      console.log('a');
+      socket.send(JSON.stringify({
+        "action": "disconnect"
+      }))
+    }
   }, 
   mounted() {
     var _this = this;
     console.log();
     socket.onopen = function (evt) {
-      socket.send(JSON.stringify({action: "getLink", p: extract(window.location.href).p}));
+      socket.send(JSON.stringify({action: "getLink", 
+        p: extract(window.location.href).p,
+        c: extract(window.location.href).c 
+      }));
     }
     socket.onmessage = function(msg) {
       var mes = JSON.parse(msg.data);
@@ -42,11 +51,18 @@ export default {
            _this.chunk = mes.data;
            break;
        } (mes.status)
-      
-    }
+    };
+    
   },
   components: {
     SquareGrid
+  },
+  created(){
+    window.onbeforeunload = function(){
+      socket.send(JSON.stringify({
+        "action": "disconnect"
+      }));
+    }
   }
 }
 
