@@ -90,6 +90,9 @@ export default {
       });
       
     },
+    getNormal(from, to){
+      return (moment.utc(moment(to).diff(moment(from))).format("HH:mm:ss"));
+    },
     modalNew(){
       this.$modal.show('newgroup')
     },
