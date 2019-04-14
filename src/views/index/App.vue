@@ -15,6 +15,8 @@
 import {SquareGrid} from 'vue-loading-spinner';
 import axios from 'axios';
 import extract from 'query-parameters';
+
+
 const socket = new WebSocket("ws://localhost:8085");
 
 

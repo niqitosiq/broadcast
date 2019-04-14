@@ -2,7 +2,7 @@
   <div class="list">
     <div class="line bb">
       <h1>Список групп</h1>
-      <addNew />
+      <ic v-on:click="modalNew()" class="iconsett" title="Добавить группу" icon="user-plus"></ic>
     </div>
     <div class="table">
       <ul class="groups">
@@ -31,7 +31,7 @@
             Сначала выберите группу
           </h2>
         </div>
-        <li v-on:click="changeStatus(item.id)" v-for="item in chunklink" v-else class="list">
+        <li v-for="item in chunklink" v-else class="list">
           <span class="id">{{item.id}}</span>
           <span v-if="item.timeto==0" class="clickable">
             {{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
@@ -39,11 +39,11 @@
           <span v-else>
             {{ getNormal(item.timefrom, item.timeto) }}
           </span>
-          <span>
-            {{ moment(item.last).format('DD.MM.YYYY HH:mm:ss') }}
+          <span class="clickable"  v-on:click="changeVal(item.id, item.all)">
+            {{ item.logined }} / {{ item.all }}
           </span>
           <span>{{ item.testPass }}/{{ item.testCount }}</span>
-          <ic v-bind:class="{active: item.status==1}" icon="mouse-pointer"></ic>
+          <ic @click="copy(item.id)" icon="copy"></ic>
         </li>
         
       </ul>
@@ -55,13 +55,10 @@
 import { Component, Vue } from 'vue-property-decorator';
 import moment from 'moment';
 import axios from 'axios';
-import addNew from '@/components/adduser.vue';
-
-
-Vue.component('addNew', addNew)
+import VueClipboard from 'v-clipboard';
 
 const socket = new WebSocket("ws://localhost:8080");
-
+Vue.use(VueClipboard)
 
 
 export default {
@@ -93,8 +90,12 @@ export default {
       });
       
     },
-    changeStatus(id){
-      axios.get('http://127.0.0.1:8456/updateSt', {params: {parent: this.parent, id: id}});
+    modalNew(){
+      this.$modal.show('newgroup')
+    },
+    changeVal(id, old){
+      this.$modal.show('editItem', {parent: this.parent, id: id, old: old})
+      //axios.get('http://127.0.0.1:8456/updateVal', {params: {parent: this.parent, id: id}});
     },
     changeData(data){
       for (var i in data){
@@ -105,6 +106,9 @@ export default {
           }
         }
       }
+    },
+    copy(id){
+      this.$clipboard("http://localhost:8081/?p=" + this.parent +"&c=" + id)
     }
   },
   mounted() {
@@ -203,9 +207,8 @@ h1
     &:last-child
       border-bottom: none
     svg
-      color: #f98787
-    svg.active
-      color: #87f998
+      color: #339af0
+      cursor: pointer
 </style>
 <style lang="sass">
 

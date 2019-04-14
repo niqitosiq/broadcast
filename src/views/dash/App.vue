@@ -1,17 +1,21 @@
 <template>
   <div id="app">
     <list/>
-    
+    <modals />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import list from '@/components/list.vue';
-import addNew from '@/components/adduser.vue';
+import modals from '@/components/modals.vue';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserPlus, faTimes, faChevronRight, faColumns, faMousePointer } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faUserPlus, faTimes, faChevronRight, faColumns, faMousePointer, faCopy } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+import VModal from 'vue-js-modal';
+Vue.use(VModal)
+
 Vue.component('ic', FontAwesomeIcon)
 Vue.config.productionTip = false
 
@@ -20,6 +24,8 @@ Vue.config.productionTip = false
 @Component({
   components: {
     list,
+    modals
+    
   },
 })
 export default class App extends Vue {}
@@ -51,4 +57,6 @@ ul
     background: #00000001
     border: solid 1px #00000020
     width: 100%
+.clickable
+  cursor: pointer
 </style>
