@@ -19,7 +19,7 @@ import { faUserPlus, faTimes, faChevronRight, faColumns, faMousePointer, faCopy,
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueGlobalVariable from 'vue-global-var';
 
-
+Vue.config.silent = true
 import VueFlashMessage from 'vue-flash-message';
 Vue.use(VueFlashMessage, {
   messageOptions: {

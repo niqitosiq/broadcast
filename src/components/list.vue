@@ -72,6 +72,7 @@ export default {
       chunklink: {},
       moment: moment,
       parent: 0,
+      toexcel: {}
     }
   },
   methods: {
