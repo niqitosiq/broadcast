@@ -78,7 +78,9 @@
 					max: this.max
 				}})
 				.then(function(resp){
-					
+					_this.max = null;
+					_this.iter = null;
+					_this.groupname = null;
 
 					if (resp.data.status=="error"){
 						_this.flash(resp.data.data, 'error');
@@ -116,6 +118,7 @@
 				this.old = event.params.old;
 			},
 			getParent(event){
+
 				this.parent = event.params.parent;
 			},
 			deletePar(){

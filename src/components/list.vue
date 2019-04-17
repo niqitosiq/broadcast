@@ -32,7 +32,9 @@
           </h2>
         </div>
         <li v-for="item in chunklink" v-else class="list">
-          <span class="id">{{item.id}}</span>
+          <span @click="checker(item.id)" class="id">
+            <input v-model="item.checker" type="checkbox">
+          </span>
           <span v-if="item.timeto==0" class="clickable">
             {{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
           </span>
@@ -76,6 +78,9 @@ export default {
     }
   },
   methods: {
+    checker(id){
+      axios.get(this.$urlget + '/checker', {params: {id: id, parent: this.parent}});
+    },
     reloadList(){
       let _this = this;
       axios.get(this.$urlget + '/ggroup')
