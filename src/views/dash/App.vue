@@ -15,7 +15,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import list from '@/components/list.vue';
 import modals from '@/components/modals.vue';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserPlus, faTimes, faChevronRight, faColumns, faMousePointer, faCopy } from '@fortawesome/free-solid-svg-icons'
+import { faUserPlus, faTimes, faChevronRight, faColumns, faMousePointer, faCopy, faTrashAlt, UserCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueGlobalVariable from 'vue-global-var';
 
@@ -71,6 +71,23 @@ ul
   cursor: pointer
   color: white
   border-radius: 5px
+  padding-right: 10px
+  padding-left: 10px
+  transition: background cubic-bezier(0.645, 0.045, 0.355, 1) 0.3s, color cubic-bezier(0.645, 0.045, 0.355, 1) 0.3s 
+  &:hover
+    background: #66b7fd
+  &.secondary
+    background: #fafafa
+    border: solid 1px #339af0
+    color: #339af0
+    &:hover
+      background: #339af0
+      color: white
+.btnvert
+  >*
+    margin-bottom: 5px
+    &:last-child
+      margin-bottom: none
 .testform
   margin-top: 40px
   min-width: 120px

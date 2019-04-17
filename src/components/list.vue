@@ -2,7 +2,7 @@
   <div class="list">
     <div class="line bb">
       <h1>Список групп</h1>
-      <ic v-on:click="modalNew()" class="iconsett" title="Добавить группу" icon="user-plus"></ic>
+      <btns />
     </div>
     <div class="table">
       <ul class="groups">
@@ -54,12 +54,15 @@
 <script lang="js">
 import { Component, Vue } from 'vue-property-decorator';
 import moment from 'moment';
+import button from '@/components/adduser.vue';
 import axios from 'axios';
 import VueClipboard from 'v-clipboard';
 
 
 Vue.use(VueClipboard)
+Vue.component('btns', button)
 
+const socket = new WebSocket('ws://localhost:1050/');
 
 export default {
   data() {
@@ -80,6 +83,9 @@ export default {
       });
     },
     getGroup(id){
+      if (id == "def"){
+        id = this.parent;
+      }
       let _this = this;
       axios.get(this.$urlget + '/gtList', {params: {id: id}})
       .then(function(response){
@@ -92,9 +98,6 @@ export default {
     },
     getNormal(from, to){
       return (moment.utc(moment(to).diff(moment(from))).format("HH:mm:ss"));
-    },
-    modalNew(){
-      this.$modal.show('newgroup')
     },
     changeVal(id, old){
       this.$modal.show('editItem', {parent: this.parent, id: id, old: old})
@@ -116,7 +119,7 @@ export default {
     }
   },
   mounted() {
-    const socket = new WebSocket(this.$urlwss);
+    
     this.reloadList();
     var _this = this;
     socket.onopen = function (evt) {
@@ -136,6 +139,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
