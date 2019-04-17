@@ -22,7 +22,7 @@ export default {
   methods: {
     addNewGroup() {
     	let _this = this;
-		axios.get('http://127.0.0.1:8456/dgroup', {params: {name: this.groupname, iter: this.iter}})
+		axios.get('http://37.140.195.53:8456/dgroup', {params: {name: this.groupname, iter: this.iter}})
 		.then(function(){
 			_this.activePopup=0;
 		});

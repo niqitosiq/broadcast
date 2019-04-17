@@ -43,7 +43,7 @@
             {{ item.logined }} / {{ item.all }}
           </span>
           <span>{{ item.testPass }}/{{ item.testCount }}</span>
-          <ic @click="copy(item.id)" icon="copy"></ic>
+          <ic class="copy" @click="copy(item.id)" icon="copy"></ic>
         </li>
         
       </ul>
@@ -57,7 +57,7 @@ import moment from 'moment';
 import axios from 'axios';
 import VueClipboard from 'v-clipboard';
 
-const socket = new WebSocket("ws://localhost:8080");
+
 Vue.use(VueClipboard)
 
 
@@ -74,14 +74,14 @@ export default {
   methods: {
     reloadList(){
       let _this = this;
-      axios.get('http://127.0.0.1:8456/ggroup')
+      axios.get(this.$urlget + '/ggroup')
       .then(function(response){
         _this.groups = response.data;
       });
     },
     getGroup(id){
       let _this = this;
-      axios.get('http://127.0.0.1:8456/gtList', {params: {id: id}})
+      axios.get(this.$urlget + '/gtList', {params: {id: id}})
       .then(function(response){
         _this.chunklink = response.data.data;
         _this.linkloaded =  true;
@@ -98,7 +98,7 @@ export default {
     },
     changeVal(id, old){
       this.$modal.show('editItem', {parent: this.parent, id: id, old: old})
-      //axios.get('http://127.0.0.1:8456/updateVal', {params: {parent: this.parent, id: id}});
+      //axios.get('http://localhost:8456/updateVal', {params: {parent: this.parent, id: id}});
     },
     changeData(data){
       for (var i in data){
@@ -111,10 +111,12 @@ export default {
       }
     },
     copy(id){
-      this.$clipboard("http://localhost:8081/?p=" + this.parent +"&c=" + id)
+      this.$clipboard(this.$user + "?p=" + this.parent +"&c=" + id);
+      this.flash('Ссылка скопирована', 'success');
     }
   },
   mounted() {
+    const socket = new WebSocket(this.$urlwss);
     this.reloadList();
     var _this = this;
     socket.onopen = function (evt) {
@@ -205,8 +207,12 @@ h1
     +flexbox(flex-start, space-between)
     padding: 20px 30px
     border-bottom: solid 1px rgba(51, 154, 240, 0.5)
-    .id
+    >*
+      width: 20%
+      text-align: center
+    .id, .copy
       +fb
+      width: 20px
     &:last-child
       border-bottom: none
     svg

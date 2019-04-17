@@ -5,19 +5,21 @@
       <p>Идёт загрузка, подождите</p>
     </div>
     <div v-else>
-      <iframe v-if="chunk!=''" :src='"http://127.0.0.1:8456/getHtml?" + chunk'></iframe>
+      <iframe v-if="chunk!=''" :src='"http://37.140.195.53:8456/getHtml?" + chunk'></iframe>
     </div>
+    <v-dialog @before-open="setTime()"/>
   </div>
-  
 </template>
 
 <script>
+import Vue from 'vue';
 import {SquareGrid} from 'vue-loading-spinner';
 import axios from 'axios';
 import extract from 'query-parameters';
+import VModal from 'vue-js-modal';
+Vue.use(VModal, { dialog: true })
 
-
-const socket = new WebSocket("ws://localhost:8085");
+const socket = new WebSocket("ws://localhost:1051");
 
 
 export default {
@@ -33,7 +35,7 @@ export default {
       socket.send(JSON.stringify({
         "action": "disconnect"
       }))
-    }
+    },
   }, 
   mounted() {
     var _this = this;
@@ -46,10 +48,43 @@ export default {
     }
     socket.onmessage = function(msg) {
       var mes = JSON.parse(msg.data);
+      console.log(mes.status)
       switch(mes.status) {
          case "linkgeted":
-           _this.chunk = mes.data;
+            _this.chunk = mes.data;
            break;
+        case "error":
+          _this.$modal.show('dialog', {
+              title: 'Произошла ошибка',
+              text: mes.data,
+              buttons: [
+                {
+                  title: 'Ok',
+                  default: true,
+                }
+              ]})
+          break;
+        case "check":
+          _this.$modal.show('dialog', {
+            title: 'Подвердите присутствовие.',
+            text: 'Нажмите на "Ок", если вы на месте',
+            buttons: [
+              {
+                title: 'Ok',
+                default: true,
+                handler: () => {
+                  _this.$modal.hide('dialog');
+                  socket.send(
+                    JSON.stringify({"action": "check-update"})
+                  );
+                }
+
+              }
+           ],
+
+          })
+          setTimeout(function(){_this.$modal.hide('dialog');}, 4000);
+          break;
        } (mes.status)
     };
     
@@ -69,6 +104,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+  *
+    +fr
   .loader 
     width: 100%
     min-height: 100vh
@@ -82,7 +119,11 @@ export default {
   iframe, .container
     width: 100%
     height: 100%
-  .container>*
+  .container, .container>*
+    height: 100%
+  body
+    width: 100%
+
     height: 100%
 </style>
 
@@ -90,4 +131,5 @@ export default {
   html,body
     width: 100%
     height: 100%
+    overflow: hidden!important
 </style>

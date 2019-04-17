@@ -51,19 +51,26 @@
 		methods: {
 			addNewGroup() {
 				let _this = this;
-				axios.get('http://127.0.0.1:8456/dgroup', {params: {
+				axios.get(this.$urlget + '/dgroup', {params: {
 					name: this.groupname, 
 					iter: this.iter,
 					temp: this.temp,
 					max: this.max
 				}})
-				.then(function(){
-					_this.$modal.hide('newgroup')
+				.then(function(resp){
+					
+
+					if (resp.data.status=="error"){
+						_this.flash(resp.data.data, 'error');
+						
+					} else {
+						_this.$modal.hide('newgroup');
+					}
 				});
 			},
 			getTemp(){
 				let _this = this;
-				axios.get('http://127.0.0.1:8456/getListOfTemplates')
+				axios.get(this.$urlget + '/getListOfTemplates')
 				.then(function(response){
 					_this.listtemp = response.data.data;
 				});
@@ -75,7 +82,7 @@
 			},
 			edit(){
 				let _this = this;
-				axios.get('http://127.0.0.1:8456/editMax', {params: {
+				axios.get(this.$urlget + '/editMax', {params: {
 					"parent": this.parent,
 					"id": this.id,
 					"new": this.old
@@ -107,10 +114,7 @@
 	cursor: pointer
 
 .v--modal-box
-	padding-top: 40px
-	padding-bottom: 40px
-	padding-left: 50px
-	padding-right: 50px
+	padding: 40px 50px!important
 	h2,h3
 		margin-bottom: 20px
 		text-align: center

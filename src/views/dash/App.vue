@@ -1,25 +1,46 @@
 <template>
   <div id="app">
-    <list/>
-    <modals />
+    <div class="cont">
+      <list/>
+      <modals />
+    </div>
+    <div class="mescont">
+      <flash-message transitionName="nice-modal-fade"/>
+    </div>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { Component, Vue } from 'vue-property-decorator';
 import list from '@/components/list.vue';
 import modals from '@/components/modals.vue';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faUserPlus, faTimes, faChevronRight, faColumns, faMousePointer, faCopy } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import VueGlobalVariable from 'vue-global-var';
+
+
+import VueFlashMessage from 'vue-flash-message';
+Vue.use(VueFlashMessage, {
+  messageOptions: {
+    timeout: 700,
+  }
+});
+require('vue-flash-message/dist/vue-flash-message.min.css');
 
 import VModal from 'vue-js-modal';
-Vue.use(VModal)
+Vue.use(VModal);
 
 Vue.component('ic', FontAwesomeIcon)
 Vue.config.productionTip = false
 
-
+Vue.use(VueGlobalVariable, {
+  globals: {
+    urlget: "http://localhost:8456",
+    urlwss: 'ws://localhost:1050/',
+    user: "http://localhost:8081/",
+  }
+})
 
 @Component({
   components: {
@@ -28,7 +49,8 @@ Vue.config.productionTip = false
     
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+}
 </script>
 
 <style lang="sass">
@@ -36,8 +58,10 @@ export default class App extends Vue {}
 ul
   list-style: none
 #app
-  +flexbox(start, start, column)
   +fr
+#app>.cont
+  +flexbox(start, start, column)
+  
   width: 1200px
   margin: 30px auto  
 .button
@@ -59,4 +83,9 @@ ul
     width: 100%
 .clickable
   cursor: pointer
+.mescont
+  position: fixed
+  right: 30px
+  bottom: 30px
+  z-index: 1000
 </style>
