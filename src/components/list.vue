@@ -31,23 +31,23 @@
             Сначала выберите группу
           </h2>
         </div>
-        <li v-for="item in chunklink" v-else class="list">
-          <span @click="checker(item.id)" class="id">
-            <input v-model="item.checker" type="checkbox">
-          </span>
-          <span v-if="item.timeto==0" class="clickable">
-            {{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
-          </span>
-          <span v-else>
-            {{ getNormal(item.timefrom, item.timeto) }}
-          </span>
-          <span class="clickable"  v-on:click="changeVal(item.id, item.all)">
-            {{ item.logined }} / {{ item.all }}
-          </span>
-          <span>{{ item.testPass }}/{{ item.testCount }}</span>
-          <ic class="copy" @click="copy(item.id)" icon="copy"></ic>
-        </li>
-        
+        <div v-else>
+          <li v-for="item in chunklink" class="list">
+            <span v-if="item.timeto==0" class="clickable">
+              {{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
+            </span>
+            <span v-else>
+              {{ getNormal(item.timefrom, item.timeto) }}
+            </span>
+            <span class="clickable"  v-on:click="changeVal(item.id, item.all)">
+              {{ item.logined }} / {{ item.all }}
+            </span>
+            <span>
+              {{ item.testPass }}/{{ item.testCount }}
+            </span>
+            <ic class="copy" @click="copy(item.id)" icon="copy"></ic>
+          </li>
+        </div>
       </ul>
     </div>
   </div>
@@ -74,12 +74,17 @@ export default {
       chunklink: {},
       moment: moment,
       parent: 0,
-      toexcel: {}
+      toexcel: {},
+      isCheck: true,
+      isTicket: false,
     }
   },
   methods: {
     checker(id){
       axios.get(this.$urlget + '/checker', {params: {id: id, parent: this.parent}});
+    },
+    testChecker(id){
+      axios.get(this.$urlget + '/testChecker', {params: {id: id, parent: this.parent}});
     },
     reloadList(){
       let _this = this;
@@ -95,13 +100,30 @@ export default {
       let _this = this;
       axios.get(this.$urlget + '/gtList', {params: {id: id}})
       .then(function(response){
-        _this.chunklink = response.data.data;
+        _this.chunklink = response.data.data.data;
+        _this.isTicket = response.data.data.attrs.checker;
+        _this.isCheck = response.data.data.attrs.ticket;
         _this.linkloaded =  true;
         _this.parent = id;
         socket.send(JSON.stringify({"action": "connect", "target": id}));
       });
       
     },
+    changeTicket(){
+      let _this = this;
+      axios.get(this.$urlget + '/changeTicket', {params: {"parent": this.parent}})
+      .then(function(response){
+        _this.getGroup("def");
+      });
+    },
+    changeCheck(){
+      let _this = this;
+      axios.get(this.$urlget + '/changeCheck', {params: {"parent": this.parent}})
+      .then(function(response){
+        _this.getGroup("def");
+      });
+    },
+
     getNormal(from, to){
       return (moment.utc(moment(to).diff(moment(from))).format("HH:mm:ss"));
     },
@@ -228,6 +250,12 @@ h1
     svg
       color: #339af0
       cursor: pointer
+  .btnwrapper
+    width: 100%
+    padding: 0 30px
+    margin-bottom: 30px
+    >*
+      margin-right: 20px
 </style>
 <style lang="sass">
 

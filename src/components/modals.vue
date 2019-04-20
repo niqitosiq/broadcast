@@ -1,7 +1,7 @@
 <template>
   <div>
     <modal width="400px" overlayTransition="nice-modal-fade" height="auto" name="newgroup" class="newgroup">
-		<h2>Добавить пользователя</h2>
+		<h2>Добавить группу</h2>
 		<input v-model="groupname" placeholder="Название группы" type="text">
 		<input v-model="iter" placeholder="Количество ссылок" type="text">
 		<input v-model="max" placeholder="Переходов по каждой ссылке" type="text">
@@ -19,7 +19,7 @@
 	</modal>
 	<modal width="400px" height="auto" @before-open="getForChange" name="editItem" overlayTransition="nice-modal-fade">
 		
-		<h3>Изменить максимальное количество переходов</h3>
+		<h3>Изменить максимальное количество переходов по конкретной ссылке</h3>
 		<input v-model="old" type="text">
 		<div v-on:click="edit();" class="button">Изменить</div>
 		<ic @click="$modal.hide('editItem')" class="close" icon="times"></ic>
@@ -37,11 +37,18 @@
 		</div>
 	</modal>
 	<modal width="400px" height="auto" name="settings" @before-open="getParent" overlayTransition="nice-modal-fade">
-		<h3>Добавить ссылок</h3>
+		<h3>Настройки группы</h3>
 		<div class="sep-group">
-			<input placeholder="Количество" v-model="max" type="text">
-			<input placeholder="Переходов в каждой" v-model="iter" type="text">
-			<div @click="addLinks" class="button">Добавить</div>
+			<input placeholder="Переходов в группе" v-model="max" type="text">
+			<input placeholder="Интервал проверки присутствия" v-model="interval" type="text">
+			<div @click="changeSettings" class="button">Сохранить</div>
+		</div>
+		<div class="sep-group">
+			<h3>Добавить ссылок</h3>
+			<input placeholder="Количество ссылок для добавления" v-model="iter" type="text">
+			<div @click="addLinks" class="button">
+				Добавить
+			</div>
 		</div>
 		
 	</modal>
@@ -66,6 +73,7 @@
 				id: "def",
 				parent: "def",
 				old: 0,
+				interval: null,
 			};
 		},
 		methods: {
@@ -94,11 +102,26 @@
 				let _this = this;
 				axios.get(this.$urlget + '/addLinks', {params: {
 					parent: this.parent, 
-					iter: this.iter,
-					max: this.max
+					iter: this.iter
 				}}).then(function(response){
 					console.log(response.data.status);
 					if (response.data.status == "ok"){
+						console.log(_this.$parent.$children)
+						_this.$parent.$children[0].getGroup("def");
+						_this.$parent.$children[0].reloadList();
+						_this.$modal.hide('settings')
+					}
+				})
+			},
+			changeSettings(){
+				let _this = this;
+				axios.get(this.$urlget + '/setSettings', {params: {
+					parent: this.parent,
+					interval: this.interval,
+					max: this.max
+				}}).then(function(response){
+					if (response.data.status == "ok"){
+						console.log(_this.$parent.$children);
 						_this.$parent.$children[0].getGroup("def");
 						_this.$parent.$children[0].reloadList();
 						_this.$modal.hide('settings')

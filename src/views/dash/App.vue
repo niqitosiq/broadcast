@@ -15,7 +15,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import list from '@/components/list.vue';
 import modals from '@/components/modals.vue';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserPlus, faTimes, faChevronRight, faColumns, faMousePointer, faCopy, faTrashAlt, UserCog } from '@fortawesome/free-solid-svg-icons'
+import { faUserPlus, faTimes, faChevronRight, faColumns, faPowerOff, faMousePointer, faCopy, faTrashAlt, UserCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueGlobalVariable from 'vue-global-var';
 
@@ -38,7 +38,7 @@ Vue.use(VueGlobalVariable, {
   globals: {
     urlget: "http://localhost:8456",
     urlwss: 'ws://localhost:1050/',
-    user: "http://localhost:8081/",
+    user: "http://stream.pro-stream.ru",
   }
 })
 

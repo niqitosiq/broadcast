@@ -5,7 +5,7 @@
       <p>Идёт загрузка, подождите</p>
     </div>
     <div v-else>
-      <iframe v-if="chunk!=''" :src='"http://37.140.195.53:8456/getHtml?" + chunk'></iframe>
+      <iframe v-if="chunk!=''" :src='"http://localhost:8456/getHtml?" + chunk'></iframe>
     </div>
     <v-dialog @before-open="setTime()"/>
   </div>
@@ -25,7 +25,7 @@ const socket = new WebSocket("ws://localhost:1051");
 export default {
   data() {
     return {
-      loaded: true,
+      loaded: false,
       chunk: '',
     }
   },
@@ -52,6 +52,7 @@ export default {
       switch(mes.status) {
          case "linkgeted":
             _this.chunk = mes.data;
+            _this.loaded = true;
            break;
         case "error":
           _this.$modal.show('dialog', {
