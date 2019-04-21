@@ -7,7 +7,7 @@
     <div class="table">
       <ul class="groups">
         <div v-if="groups.data.groups.length!=0">
-          <li v-on:click="getGroup(item.id)" v-for="item in groups.data.groups">
+          <li v-on:click="getGroup(item.id)" v-for="item in groups.data.groups.slice().reverse()">
             <div class="dataholder">
               <div class="id">{{ item.id }}</div>
               <div class="count">Количество: {{ item.count }}</div>
@@ -31,23 +31,31 @@
             Сначала выберите группу
           </h2>
         </div>
-        <div v-else>
-          <li v-for="item in chunklink" class="list">
-            <span v-if="item.timeto==0" class="clickable">
+        <table v-else>
+          <tr class="list">
+            <td>Время</td>
+            <td>Посещения</td>
+            <td>Подверждения</td>
+            <td>Ссылка</td>
+          </tr>
+          <tr v-for="item in chunklink" class="list">
+            <td v-if="item.timeto==0" class="clickable">
               {{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
-            </span>
-            <span v-else>
+            </td>
+            <td v-else>
               {{ getNormal(item.timefrom, item.timeto) }}
-            </span>
-            <span class="clickable"  v-on:click="changeVal(item.id, item.all)">
+            </td>
+            <td class="clickable"  v-on:click="changeVal(item.id, item.all)">
               {{ item.logined }} / {{ item.all }}
-            </span>
-            <span>
+            </td>
+            <td>
               {{ item.testPass }}/{{ item.testCount }}
-            </span>
-            <ic class="copy" @click="copy(item.id)" icon="copy"></ic>
-          </li>
-        </div>
+            </td>
+            <td class="small">
+              <ic class="copy" @click="copy(item.id)" icon="copy"></ic>
+            </td>
+          </tr>
+        </table>
       </ul>
     </div>
   </div>
@@ -59,8 +67,8 @@ import moment from 'moment';
 import button from '@/components/adduser.vue';
 import axios from 'axios';
 import VueClipboard from 'v-clipboard';
-
-
+import AES from "crypto-js/aes";
+import jntb from "html-table-to-json";
 Vue.use(VueClipboard)
 Vue.component('btns', button)
 
@@ -142,7 +150,8 @@ export default {
       }
     },
     copy(id){
-      this.$clipboard(this.$user + "?p=" + this.parent +"&c=" + id);
+      let link = {p: this.parent, c: id}
+      this.$clipboard(this.$user + '?link=' + AES.encrypt(JSON.stringify(link), "broadcastsecret"));
       this.flash('Ссылка скопирована', 'success');
     }
   },
@@ -236,15 +245,19 @@ h1
       font-size: 50px
   .list
     width: 100%
-    +flexbox(flex-start, space-between)
-    padding: 20px 30px
     border-bottom: solid 1px rgba(51, 154, 240, 0.5)
+    border-collapse: separate
+    vertical-align: center
+    text-align: center
+
     >*
-      width: 20%
       text-align: center
-    .id, .copy
+      display: table-cell
+      margin-top: 10px
+      padding: 20px
+    .small
       +fb
-      width: 20px
+      width: 100px
     &:last-child
       border-bottom: none
     svg

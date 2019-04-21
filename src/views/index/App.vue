@@ -17,6 +17,7 @@ import {SquareGrid} from 'vue-loading-spinner';
 import axios from 'axios';
 import extract from 'query-parameters';
 import VModal from 'vue-js-modal';
+import CryptoJS from "crypto-js";
 Vue.use(VModal, { dialog: true })
 
 const socket = new WebSocket("ws://localhost:1051");
@@ -39,12 +40,12 @@ export default {
   }, 
   mounted() {
     var _this = this;
-    console.log();
+    console.log(extract(window.location.href).link)
+    let link = JSON.parse(CryptoJS.AES.decrypt(extract(window.location.href).link, "broadcastsecret").toString(CryptoJS.enc.Utf8));
     socket.onopen = function (evt) {
-      socket.send(JSON.stringify({action: "getLink", 
-        p: extract(window.location.href).p,
-        c: extract(window.location.href).c 
-      }));
+        socket.send(
+          JSON.stringify({action: "getLink", p: link.p, c: link.c})
+        );
     }
     socket.onmessage = function(msg) {
       var mes = JSON.parse(msg.data);

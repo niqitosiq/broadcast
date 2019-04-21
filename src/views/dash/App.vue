@@ -1,12 +1,18 @@
 <template>
   <div id="app">
-    <div class="cont">
-      <list/>
-      <modals />
-    </div>
-    <div class="mescont">
-      <flash-message transitionName="nice-modal-fade"/>
-    </div>
+    
+    <span v-if="auth==true" >
+      <div class="cont">
+        <list/>
+        <modals />
+      </div>
+      <div class="mescont">
+        <flash-message transitionName="nice-modal-fade"/>
+      </div>
+    </span>
+    <span v-else>
+      Вы не авторизированы
+    </span>
   </div>
 </template>
 
@@ -18,6 +24,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faUserPlus, faTimes, faChevronRight, faColumns, faPowerOff, faMousePointer, faCopy, faTrashAlt, UserCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueGlobalVariable from 'vue-global-var';
+import cookie from 'js-cookie';
 
 Vue.config.silent = true
 import VueFlashMessage from 'vue-flash-message';
@@ -38,7 +45,7 @@ Vue.use(VueGlobalVariable, {
   globals: {
     urlget: "http://localhost:8456",
     urlwss: 'ws://localhost:1050/',
-    user: "http://stream.pro-stream.ru",
+    user: "http://localhost:8080/",
   }
 })
 
@@ -50,6 +57,21 @@ Vue.use(VueGlobalVariable, {
   },
 })
 export default class App extends Vue {
+  data() {
+    return {
+      auth: false
+    }
+  }
+  mounted() {
+    this.auth = cookie.get("auth");
+    if (this.auth != true){
+      let response = prompt("Введите пароль ниже");
+      if (response=="broadcast"){
+        this.auth = 1;
+        cookie.set('auth', this.auth);
+      }
+    }
+  }
 }
 </script>
 
@@ -59,7 +81,7 @@ ul
   list-style: none
 #app
   +fr
-#app>.cont
+#app .cont
   +flexbox(start, start, column)
   
   width: 1200px

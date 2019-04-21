@@ -20,10 +20,10 @@
 </template>
 <script>
 
-import Vue from 'vue'
-import JsonExcel from 'vue-json-excel'
-
-Vue.component('downloadExcel', JsonExcel)
+import Vue from 'vue';
+import JsonExcel from 'vue-json-excel';
+import moment from 'moment';
+Vue.component('downloadExcel', JsonExcel);
 
 export default {
 	data(){
@@ -31,8 +31,18 @@ export default {
 			fields: {
 				'Статус': 'status',
 	            'Айди': 'id',
-	            'Время Начала': 'timefrom',
-	            'Время Конца': 'timeto',
+	            'Время Начала': {
+	            	field: 'timefrom',
+	            	callback: (value) => {
+	            		return moment(value).format('DD.MM.YYYY HH:mm:ss');
+	            	}
+	            },
+	            'Время Конца': {
+	            	field: 'timeto',
+	            	callback: (value) => {
+	            		return moment(value).format('DD.MM.YYYY HH:mm:ss');
+	            	}
+	            },
 	            'Количество тестов': 'testCount',
 	            'Пройдено тестов': 'testPass',
 	            'Сейчас онлайн': 'logined',
