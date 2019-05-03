@@ -39,12 +39,18 @@
             <td>Ссылка</td>
           </tr>
           <tr v-for="item in chunklink" class="list">
+            <td>
+              {{ item.texttotal }}
+            </td>
+            <!--
             <td v-if="item.timeto==0" class="clickable">
+              
               {{ moment(item.timefrom).format('DD.MM.YYYY HH:mm:ss') }}
+              
             </td>
             <td v-else>
               {{ getNormal(item.timefrom, item.timeto) }}
-            </td>
+            </td> -->
             <td class="clickable"  v-on:click="changeVal(item.id, item.all)">
               {{ item.logined }} / {{ item.all }}
             </td>
@@ -72,7 +78,7 @@ import jntb from "html-table-to-json";
 Vue.use(VueClipboard)
 Vue.component('btns', button)
 
-const socket = new WebSocket('ws://localhost:1050/');
+const socket = new WebSocket('ws://37.140.195.53:1050/');
 
 export default {
   data() {

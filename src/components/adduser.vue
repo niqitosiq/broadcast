@@ -31,19 +31,20 @@ export default {
 			fields: {
 				'Статус': 'status',
 	            'Айди': 'id',
-	            'Время Начала': {
+	            'Время первого запроса': {
 	            	field: 'timefrom',
 	            	callback: (value) => {
 	            		return moment(value).format('DD.MM.YYYY HH:mm:ss');
 	            	}
 	            },
-	            'Время Конца': {
+	            'Время разрыва': {
 	            	field: 'timeto',
 	            	callback: (value) => {
 	            		return moment(value).format('DD.MM.YYYY HH:mm:ss');
 	            	}
 	            },
-	            'Количество тестов': 'testCount',
+	            'Сумма времени сессий': 'texttotal',
+	            'Количество тестов': 'twestCount',
 	            'Пройдено тестов': 'testPass',
 	            'Сейчас онлайн': 'logined',
 	            'Возможный онлайн': 'all',

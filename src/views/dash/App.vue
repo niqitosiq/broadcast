@@ -43,9 +43,14 @@ Vue.config.productionTip = false
 
 Vue.use(VueGlobalVariable, {
   globals: {
+     
+    urlget: "http://37.140.195.53:8456",
+    urlwss: 'ws://37.140.195.53:1050/',
+    user: "http://stream.pro-stream.ru/",
+   /*
     urlget: "http://localhost:8456",
     urlwss: 'ws://localhost:1050/',
-    user: "http://localhost:8080/",
+    user: "http://localhost:8080/",*/
   }
 })
 

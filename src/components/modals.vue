@@ -5,14 +5,16 @@
 		<input v-model="groupname" placeholder="Название группы" type="text">
 		<input v-model="iter" placeholder="Количество ссылок" type="text">
 		<input v-model="max" placeholder="Переходов по каждой ссылке" type="text">
-		<select v-model="temp">
+		<select @change="tempchange" v-model="temp">
 			<option value="" disabled selected>Выберите шаблон</option>
 
 			<option v-for="item in listtemp" :value="item">
 				{{ item }}
 			</option>
 		</select>
-		
+		<transition  name="fadeHeight" mode="out-in">
+		<textarea v-model="templatehtml" v-if="templatehtml!=null"></textarea>
+		</transition>
 		<div v-on:click="addNewGroup();" class="button">Создать</div>
 
     	<ic @click="$modal.hide('newgroup')" class="close" icon="times"></ic>
@@ -74,6 +76,7 @@
 				parent: "def",
 				old: 0,
 				interval: null,
+				templatehtml: null,
 			};
 		},
 		methods: {
@@ -82,14 +85,15 @@
 				axios.get(this.$urlget + '/dgroup', {params: {
 					name: this.groupname, 
 					iter: this.iter,
-					temp: this.temp,
+					temp: this.templatehtml,
 					max: this.max
 				}})
 				.then(function(resp){
 					_this.max = null;
 					_this.iter = null;
 					_this.groupname = null;
-
+					_this.temp = "";
+					_this.templatehtml = null;
 					if (resp.data.status=="error"){
 						_this.flash(resp.data.data, 'error');
 						
@@ -164,6 +168,15 @@
 				.then(function(response){
 					_this.$modal.hide('editItem')
 				});
+			},
+			tempchange(){
+				let _this = this;
+				axios.get(this.$urlget + '/getHtml', {params: {ref: this.temp}})
+				.then(function (resp) {
+					_this.templatehtml = resp.data;
+
+				})
+				
 			}
 		},
 		mounted() {
@@ -195,7 +208,7 @@
 	h2,h3
 		margin-bottom: 20px
 		text-align: center
-	input, select
+	input, select, textarea
 		width: 100%
 		height: 50px
 		padding-left: 20px
@@ -210,6 +223,9 @@
 		-webkit-appearance: none
 	    -moz-appearance: none
 	    appearance: none
+	textarea
+		padding-top: 10px
+		height: 300px
 	.close
 		font-size: 25px
 		position: absolute
@@ -241,5 +257,12 @@
 		margin-bottom: 10px
 		&:last-child
 			margin-bottom: 0
+.fadeHeight-enter-active, .fadeHeight-leave-active 
+	transition: all 0.25s!important
+	max-height: 300px
+
+.fadeHeight-enter, .fadeHeight-leave-to
+	opacity: 0
+	max-height: 0px
 
 </style>

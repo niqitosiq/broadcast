@@ -5,7 +5,7 @@
       <p>Идёт загрузка, подождите</p>
     </div>
     <div v-else>
-      <iframe v-if="chunk!=''" :src='"http://localhost:8456/getHtml?" + chunk'></iframe>
+      <iframe v-if="chunk!=''" :src='"http://37.140.195.53:8456/getIfr?" + chunk'></iframe>
     </div>
     <v-dialog @before-open="setTime()"/>
   </div>
@@ -18,9 +18,10 @@ import axios from 'axios';
 import extract from 'query-parameters';
 import VModal from 'vue-js-modal';
 import CryptoJS from "crypto-js";
+import moment from 'moment';
 Vue.use(VModal, { dialog: true })
 
-const socket = new WebSocket("ws://localhost:1051");
+const socket = new WebSocket("ws://37.140.195.53:1051");
 
 
 export default {
@@ -28,18 +29,26 @@ export default {
     return {
       loaded: false,
       chunk: '',
+      moment: moment,
+      start: "",
+      total: "",
     }
   },
   methods: {
     leaving(){
       console.log('a');
       socket.send(JSON.stringify({
-        "action": "disconnect"
+        "action": "disconnect",
       }))
+    },
+    getNormal(from, to){
+      return (moment(to).diff(moment(from)));
     },
   }, 
   mounted() {
-    var _this = this;
+    this.start = moment().format();
+
+    var  _this = this;
     console.log(extract(window.location.href).link)
     let link = JSON.parse(CryptoJS.AES.decrypt(extract(window.location.href).link, "broadcastsecret").toString(CryptoJS.enc.Utf8));
     socket.onopen = function (evt) {
@@ -95,9 +104,13 @@ export default {
     SquareGrid
   },
   created(){
+    
+    var _this = this;
     window.onbeforeunload = function(){
+      var total = _this.getNormal(_this.start, moment().format())
       socket.send(JSON.stringify({
-        "action": "disconnect"
+        "action": "disconnect",
+        "lasttime": total,
       }));
     }
   }
