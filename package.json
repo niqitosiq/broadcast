@@ -30,7 +30,7 @@
     "vue-loading-spinner": "^1.0.11",
     "vue-property-decorator": "^8.1.0",
     "vue-websocket": "^0.2.3",
-    "ws": "^6.2.1"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.5",
