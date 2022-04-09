@@ -17,7 +17,7 @@
     "html-table-to-json": "^0.4.0",
     "js-cookie": "^2.2.0",
     "md5": "^2.2.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "query-parameters": "^0.1.2",
     "v-clipboard": "^2.2.2",
     "vue": "^2.6.10",
